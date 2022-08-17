@@ -206,6 +206,7 @@
           resize: none;
           border-bottom: 1px solid #212529;
           width: 100%;
+          height: 20px;
           font-family: 'Spoqa Han Sans';
         }
 
@@ -216,6 +217,8 @@
           resize: none;
           border-bottom: 1px solid #212529;
           width: 100%;
+
+          height: 20px;
           font-family: 'Spoqa Han Sans';
         }
 
@@ -304,7 +307,6 @@
                     url: `/api/posts/${id}`,
                     contentType: "application/json", //문자열이 아니라 json타입 임을 알려줌
                     data: JSON.stringify(data), //json값으로 변경
-                    async : false,
                     success: function (response) {
                       if (response == true){
                         alert('확인되었습니다.');
@@ -351,6 +353,19 @@
 
           let contents = $(`#${id}-contents`).text().trim();
           $(`#${id}-textarea`).val(contents);
+
+          let password;
+
+          $.ajax({
+            type: 'GET',
+            url: `/api/posts/${id}`,
+            async: false,
+            success: function (data) {
+              console.log(data);
+              password = data.password;
+              }
+          })
+          $(`#${id}-passwordarea`).val(password);
         }
 
 
@@ -432,15 +447,15 @@
                             </div>
                             <div class="password">
                                 <div id="${id}-editpassword" class="edit">
-                                  <textarea id="${id}-passwordarea" placeholder="변경할 비밀번호" class="te-edit" name="" id=""></textarea>
+                                  <textarea id="${id}-passwordarea" class="te-edit" name="" id=""></textarea>
                                 </div>
                             </div>
                             <form class="pw-check">
-                                <input type="number" class="field" id="${id}-password2" placeholder="비밀번호 확인">
+                                <input type="password" class="field" id="${id}-password2" placeholder="비밀번호 확인">
                                 <button type="button" class="field" id="${id}-pw2-button" onclick="checkPassword('${id}')">확인</button>
                             </form>
                             <form class="pw-check">
-                                <input type="number" class="field" id="${id}-password2-d" placeholder="비밀번호 확인">
+                                <input type="password" class="field" id="${id}-password2-d" placeholder="비밀번호 확인">
                                 <button type="button" class="field" id="${id}-pw2-button-d" onclick="checkPassword2('${id}')">확인</button>
                             </form>
                             <div class="footer">
@@ -471,13 +486,9 @@
             url: "/api/posts",
             contentType: "application/json",
             data: JSON.stringify(data),
-            async: false,
+            // async: false,
             success: function (data) {
               alert('등록 완료');
-              window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown){
-              alert('비밀번호는 숫자입니다.');
               window.location.reload();
             }
           });
@@ -488,14 +499,13 @@
           let title = $(`#${id}-titlearea`).val().trim();//trim 으로 앞뒤 공백 제거
           let autor = $(`#${id}-autorarea`).val().trim();
           let contents = $(`#${id}-textarea`).val().trim();
-          let password = $(`#${id}-passwordarea`).val();
-          let data;
+          let password = $(`#${id}-passwordarea`).val().trim();
 
           if (isValidContents(contents) == false) {
             return;
           }
 
-          data = {'title': title, 'autor':autor, 'content': contents, 'password':password};
+          let data = {'title': title, 'autor':autor, 'content': contents, 'password':password};
 
           $.ajax({
             type: "PUT",
@@ -504,10 +514,6 @@
             data: JSON.stringify(data),
             success: function (response) {
               alert('수정 완료');
-              window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown){
-              alert('비밀번호는 숫자입니다.');
               window.location.reload();
             }
           });
@@ -546,7 +552,7 @@
   <div class="area-write">
     <input class="field" id="title" placeholder="제목">
     <input class="field" id="autor" placeholder="작성자">
-    <input class="field" id="password" placeholder="비밀번호">
+    <input type="password" class="field" id="password" placeholder="비밀번호">
     <textarea class="field" placeholder="오늘의 개발 팁은 무엇인가요? " name="contents" id="contents" cols="30" rows="10"></textarea>
     <!--            <button class="btn btn-danger" onclick="writePost()">작성하기</button>-->
     <img src="images/send.png" alt="" onclick="writePost()">

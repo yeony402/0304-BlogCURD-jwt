@@ -8,5 +8,5 @@ public class PostRequestDto {
     private String title;
     private String autor;
     private String content;
-    private int password;
+    private String password;
 }

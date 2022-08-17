@@ -5,6 +5,7 @@ import com.sparta.blog.domain.Post;
 import com.sparta.blog.domain.PostRepository;
 import com.sparta.blog.models.PasswordDto;
 import com.sparta.blog.models.PostRequestDto;
+import com.sparta.blog.models.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +31,18 @@ public class PostService {
     // 입력 받은 password와 DB의 password를 비교해서 반환
     public Boolean updatePassword(Long id, PasswordDto requestDto) {
         Optional<Post> post = postRepository.findById(id);
-        if(post.get().getPassword()==requestDto.getPassword()){
+        if(post.get().getPassword().equals(requestDto.getPassword())){
             return true;
         } else {
             return false;
         }
+    }
+
+    @Transactional
+    public PostResponseDto findById(Long id) {
+        Post entity = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" +id));
+        return new PostResponseDto(entity);
     }
 
 }

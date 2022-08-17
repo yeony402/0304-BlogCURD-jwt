@@ -5,6 +5,7 @@ import com.sparta.blog.domain.Post;
 import com.sparta.blog.domain.PostRepository;
 import com.sparta.blog.models.PasswordDto;
 import com.sparta.blog.models.PostRequestDto;
+import com.sparta.blog.models.PostResponseDto;
 import com.sparta.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,10 @@ public class PostRestController {
         return postRepository.findAll();
     }
 
+    @GetMapping("/api/posts/{id}")
+    public PostResponseDto findById(@PathVariable Long id) {
+        return postService.findById(id);
+    }
 
     // 게시글 등록
     @ResponseBody

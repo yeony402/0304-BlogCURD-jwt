@@ -30,10 +30,10 @@ public class Post extends Timestamped {
 
     @JsonIgnore //json으로 반환될 때 해당 데이터를 숨김
     @Column(nullable = false)
-    private int password;
+    private String password;
 
     // 기본 생성자
-    public Post(String title, String autor, String content, int password){
+    public Post(String title, String autor, String content, String password){
         this.title = title;
         this.autor = autor;
         this.content = content;
