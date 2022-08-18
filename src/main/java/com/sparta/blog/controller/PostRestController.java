@@ -19,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 public class PostRestController {
-
     private final PostRepository postRepository;
     private final PostService postService;
 
@@ -29,6 +28,7 @@ public class PostRestController {
         return postRepository.findAll();
     }
 
+    // id값으로 조회해서 id에 해당하는 데이터만 반환(password)
     @GetMapping("/api/posts/{id}")
     public PostResponseDto findById(@PathVariable Long id) {
         return postService.findById(id);
@@ -51,10 +51,10 @@ public class PostRestController {
     // @ResponseBody - 클라이언트에 response값 반환
     @ResponseBody
     @PostMapping("/api/posts/{id}")
-    public Boolean checkPassword(@PathVariable Long id, @RequestBody PasswordDto requestDto){
+    public Boolean checkPassword(@PathVariable Long id, @RequestBody PasswordDto passwordDto){
         boolean result;
         Optional<Post> post = postRepository.findById(id);
-        result = postService.updatePassword(id, requestDto);
+        result = postService.updatePassword(id, passwordDto);
         return result;
     }
 

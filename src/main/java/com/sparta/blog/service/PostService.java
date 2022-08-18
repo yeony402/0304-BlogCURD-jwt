@@ -29,20 +29,20 @@ public class PostService {
     }
 
     // 입력 받은 password와 DB의 password를 비교해서 반환
-    public Boolean updatePassword(Long id, PasswordDto requestDto) {
+    public Boolean updatePassword(Long id, PasswordDto passwordDto) {
         Optional<Post> post = postRepository.findById(id);
-        if(post.get().getPassword().equals(requestDto.getPassword())){
+        if(post.get().getPassword().equals(passwordDto.getPassword())){
             return true;
         } else {
             return false;
         }
     }
 
+    // repository에서 password 값만 담아서 반환
     @Transactional
     public PostResponseDto findById(Long id) {
-        Post entity = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" +id));
-        return new PostResponseDto(entity);
+        Optional<Post> post = postRepository.findById(id);
+        return new PostResponseDto(post);
     }
 
 }
