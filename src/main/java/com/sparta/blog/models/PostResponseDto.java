@@ -13,4 +13,5 @@ public class PostResponseDto {
     public PostResponseDto(Optional<Post> post) {
         this.password = post.get().getPassword();
     }
+
 }

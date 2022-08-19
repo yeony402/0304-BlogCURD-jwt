@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Service</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css);
+
+        body {
+            margin: 0px;
+        }
+
+        .area-edit {
+            display: none;
+        }
+
+        .wrap {
+            width: 538px;
+            margin: 10px auto;
+        }
+
+        #contents {
+            width: 538px;
+        }
+
+        .area-write {
+            position: relative;
+            width: 538px;
+        }
+
+        .area-write img {
+            cursor: pointer;
+            position: absolute;
+            width: 22.2px;
+            height: 18.7px;
+            bottom: 15px;
+            right: 17px;
+        }
+
+        .background-header {
+            position: fixed;
+            z-index: -1;
+            top: 0px;
+            width: 100%;
+            height: 428px;
+            background-color: #339af0;
+        }
+
+        .background-body {
+            position: fixed;
+            z-index: -1;
+            top: 428px;
+            height: 100%;
+            width: 100%;
+            background-color: #dee2e6;
+        }
+
+        .header {
+            margin-top: 50px;
+        }
+
+        .header h2 {
+            font-family: 'Noto Sans KR', sans-serif;
+            height: 33px;
+            font-size: 42px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 0.79;
+            letter-spacing: -0.5px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header p {
+            margin: 40px auto;
+            width: 217px;
+            height: 48px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: -1.12px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        textarea.field {
+            width: 510px !important;
+            height: 146px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            border: none;
+            padding: 18px;
+            resize: none;
+        }
+
+        input.field {
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            padding: 4px;
+        }
+
+        textarea.field::placeholder {
+            width: 216px;
+            height: 16px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: -0.96px;
+            text-align: left;
+            color: #868e96;
+        }
+
+        .card {
+            width: 538px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .card .metadata {
+            position: relative;
+            display: flex;
+            font-family: 'Spoqa Han Sans';
+            font-size: 13px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: -0.77px;
+            text-align: left;
+            color: #adb5bd;
+            height: 14px;
+            padding: 10px 23px;
+        }
+
+        .card .metadata .date {
+
+        }
+
+        .card .metadata .title {
+            margin-left: 10px;
+        }
+
+        .card .metadata .autor {
+            margin-left: 10px;
+        }
+
+        .contents {
+            padding: 0px 23px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .contents div.edit {
+            display: none;
+        }
+
+        .title div.edit {
+            display: none;
+        }
+
+        .autor div.edit {
+            display: none;
+        }
+
+        .password div.edit {
+            display: none;
+        }
+
+        .pw-check .field{
+            display: none;
+        }
+
+        .pw-check {
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        .contents textarea.te-edit {
+            border-right: none;
+            border-top: none;
+            border-left: none;
+            resize: none;
+            border-bottom: 1px solid #212529;
+            width: 100%;
+            font-family: 'Spoqa Han Sans';
+        }
+
+        .title textarea.te-edit {
+            border-right: none;
+            border-top: none;
+            border-left: none;
+            resize: none;
+            border-bottom: 1px solid #212529;
+            width: 100%;
+            height: 20px;
+            font-family: 'Spoqa Han Sans';
+        }
+
+        .autor textarea.te-edit {
+            border-right: none;
+            border-top: none;
+            border-left: none;
+            resize: none;
+            border-bottom: 1px solid #212529;
+            width: 100%;
+
+            height: 20px;
+            font-family: 'Spoqa Han Sans';
+        }
+
+        .password textarea.te-edit {
+            border-right: none;
+            border-top: none;
+            border-left: none;
+            resize: none;
+            border-bottom: 1px solid #212529;
+            width: 50%;
+            margin:20px;
+            font-family: 'Spoqa Han Sans';
+        }
+
+
+        .footer {
+            position: relative;
+            height: 40px;
+        }
+
+
+        .footer img.icon-start-edit {
+            cursor: pointer;
+            position: absolute;
+            bottom: 14px;
+            right: 55px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer img.icon-end-edit {
+            cursor: pointer;
+            position: absolute;
+            display: none;
+            bottom: 14px;
+            right: 55px;
+            width: 20px;
+            height: 15px;
+        }
+
+        .footer img.icon-delete {
+            cursor: pointer;
+            position: absolute;
+            bottom: 12px;
+            right: 19px;
+            width: 14px;
+            height: 18px;
+        }
+
+        #cards-box {
+            margin-top: 12px;
+        }
+    </style>
+    <script>
+        // 내용을 올바르게 입력했는지 확인
+        function isValidContents(title, autor, password, contents) {
+            if (contents == '') {
+                alert('내용을 입력해주세요');
+                return false;
+            } else if(title == ''){
+                alert('제목을 입력해주세요');
+                return false;
+            } else if(autor == ''){
+                alert('작성자 이름을 입력해주세요');
+                return false;
+            } else if (password == ''){
+                alert('비밀번호를 입력해주세요')
+                return false;
+            }
+            if (contents.trim().length > 140) {
+                alert('공백 포함 140자 이하로 입력해주세요');
+                return false;
+            }
+            return true;
+        }
+
+
+
+
+        function showCheck(id){
+            $(`#${id}-password2`).show();
+            $(`#${id}-pw2-button`).show();
+        }
+
+        function showCheck2(id){
+            $(`#${id}-password2-d`).show();
+            $(`#${id}-pw2-button-d`).show();
+        }
+
+        // 비밀번호가 일치하는지 확인(수정)
+        function checkPassword(id){
+            let password2 = $(`#${id}-password2`).val().trim(); // trim() 공백 제거
+            let data = { "password" : password2 };
+
+            $.ajax({
+                type: "POST",
+                url: `/api/posts/${id}`,
+                contentType: "application/json", //문자열이 아니라 json타입 임을 알려줌
+                data: JSON.stringify(data), //json값으로 변경
+                success: function (response) {
+                    if (response == true){
+                        alert('확인되었습니다.');
+                        editPost(id);
+                    } else {
+                        alert('비밀번호가 틀렸습니다.');
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+        // 비밀번호가 일치하는지 확인(삭제)
+        function checkPassword2(id) {
+            let password2 = $(`#${id}-password2-d`).val().trim(); // trim() 공백 제거
+            let data = {"password": password2};
+
+            $.ajax({
+                type: "POST",
+                url: `/api/posts/${id}`,
+                contentType: "application/json", //문자열이 아니라 json타입 임을 알려줌
+                data: JSON.stringify(data), //json값으로 변경
+                async: false,
+                success: function (response) {
+                    if (response == true) {
+                        deleteOne(id);
+                    } else {
+                        alert('비밀번호가 틀렸습니다.');
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+        // 수정 버튼을 눌렀을 때, 기존의 작성 내용을 수정 창에 나타냄
+        function editPost(id) {
+            showEdits(id);
+            let title = $(`#${id}-title`).text().trim();
+            $(`#${id}-titlearea`).val(title);
+
+            let autor = $(`#${id}-autor`).text().trim();
+            $(`#${id}-autorarea`).val(autor);
+
+            let contents = $(`#${id}-contents`).text().trim();
+            $(`#${id}-textarea`).val(contents);
+
+            let password;
+
+            $.ajax({
+                type: 'GET',
+                url: `/api/posts/${id}`,
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                    password = data.password;
+                }
+            })
+            $(`#${id}-passwordarea`).val(password);
+        }
+
+
+        // 원래 태그는 숨기고 필요한 태그만 나타냄
+        function showEdits(id) {
+            $(`#${id}-edittitle`).show();
+            $(`#${id}-editautor`).show();
+            $(`#${id}-editarea`).show();
+            $(`#${id}-editpassword`).show();
+            $(`#${id}-submit`).show();
+
+            $(`#${id}-password2`).hide();
+            $(`#${id}-pw2-button`).hide();
+            $(`#${id}-title`).hide();
+            $(`#${id}-autor`).hide();
+            $(`#${id}-contents`).hide();
+            $(`#${id}-edit`).hide();
+            $(`#${id}-delete`).hide();
+        }
+
+
+
+        // 게시글 수정
+        function submitEdit(id) {
+            let title = $(`#${id}-titlearea`).val().trim();//trim 으로 앞뒤 공백 제거
+            let autor = $(`#${id}-autorarea`).val().trim();
+            let contents = $(`#${id}-textarea`).val().trim();
+            let password = $(`#${id}-passwordarea`).val().trim();
+
+            if (isValidContents(title, autor, password, contents) == false) {
+                return;
+            }
+
+            let data = {'title': title, 'autor':autor, 'content': contents, 'password':password};
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/posts/${id}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert('수정 완료');
+                    location.href = "/";
+                    // 전체조회
+                }
+            });
+        }
+
+        // 게시글 삭제
+        function deleteOne(id) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/posts/${id}`,
+                success: function (response) {
+                    alert('삭제 완료');
+                    location.href = "/";
+                    // 전체조회
+                }
+            })
+        }
+    </script>
+</head>
+
+
+
+<body>
+<div class="background-header">
+
+</div>
+<div class="background-body">
+
+</div>
+<div class="wrap">
+    <div class="header">
+        <h2>나의 개발일지</h2>
+        <p>
+            유레카! 를 외쳤던
+            오늘의 개발 꿀팁을 자유롭게 남겨주세요.
+        </p>
+    </div>
+
+<div class="area-write">
+    <div class="card">
+        <div class="metadata">
+            <div th:text="${data.createAt}" class="date"></div>
+            <div class="title">
+                <div th:id="${data.id}+'-title'" th:text="${data.title}" class="text"></div>
+                <div th:id="${data.id}+'-edittitle'" class="edit">
+                    <textarea th:id="${data.id}+'-titlearea'" class="te-edit" name="" id=""></textarea>
+                </div>
+            </div>
+            <div class="autor">
+                <div th:id="${data.id}+'-autor'" th:text="${data.autor}" class="text"></div>
+                <div th:id="${data.id}+'-editautor'" class="edit">
+                    <textarea th:id="${data.id}+'-autorarea'" class="te-edit" name="" ></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="contents">
+            <div th:id="${data.id}+'-contents'" th:text="${data.content}" class="text"></div>
+            <div th:id="${data.id}+'-editarea'" class="edit">
+                <textarea th:id="${data.id}+'-textarea'" class="te-edit" name="" cols="30" rows="5"></textarea>
+            </div>
+        </div>
+        <div class="password">
+            <div th:id="${data.id}+'-editpassword'" class="edit">
+                <textarea th:id="${data.id}+'-passwordarea'" class="te-edit" name="" ></textarea>
+            </div>
+        </div>
+        <form class="pw-check">
+            <input type="password" class="field" th:id="${data.id}+'-password2'" placeholder="비밀번호 확인">
+            <button type="button" class="field" th:id="${data.id}+'-pw2-button'" th:onclick="|javascript:checkPassword(${data.id})|">확인</button>
+        </form>
+        <form class="pw-check">
+            <input type="password" class="field" th:id="${data.id}+'-password2-d'" placeholder="비밀번호 확인">
+            <button type="button" class="field" th:id="${data.id}+'-pw2-button-d'" th:onclick="|javascript:checkPassword2(${data.id})|">확인</button>
+        </form>
+        <div class="footer">
+            <img th:id="${data.id}+'-edit'" class="icon-start-edit" th:src="@{/images/edit.png}" alt="" th:onclick="|javascript:showCheck(${data.id})|">
+            <img th:id="${data.id}+'-delete'" class="icon-delete" th:src="@{/images/delete.png}" alt="" th:onclick="|javascript:showCheck2(${data.id})|">
+            <img th:id="${data.id}+'-submit'" class="icon-end-edit" th:src="@{/images/done.png}" alt="" th:onclick="|javascript:submitEdit(${data.id})|">
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+</html>

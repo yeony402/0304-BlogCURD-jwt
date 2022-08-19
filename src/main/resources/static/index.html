@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:c="">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -275,9 +276,18 @@
     </style>
   <script>
     // 내용을 올바르게 입력했는지 확인
-        function isValidContents(contents) {
+        function isValidContents(title, autor, password, contents) {
           if (contents == '') {
             alert('내용을 입력해주세요');
+            return false;
+          } else if(title == ''){
+            alert('제목을 입력해주세요');
+            return false;
+          } else if(autor == ''){
+            alert('작성자 이름을 입력해주세요');
+            return false;
+          } else if (password == ''){
+            alert('비밀번호를 입력해주세요')
             return false;
           }
           if (contents.trim().length > 140) {
@@ -287,104 +297,6 @@
           return true;
         }
 
-
-        function showCheck(id){
-          $(`#${id}-password2`).show();
-          $(`#${id}-pw2-button`).show();
-        }
-
-        function showCheck2(id){
-          $(`#${id}-password2-d`).show();
-          $(`#${id}-pw2-button-d`).show();
-        }
-
-        // 비밀번호가 일치하는지 확인(수정)
-        function checkPassword(id){
-          let password2 = $(`#${id}-password2`).val().trim(); // trim() 공백 제거
-          let data = { "password" : password2 };
-
-                  $.ajax({
-                    type: "POST",
-                    url: `/api/posts/${id}`,
-                    contentType: "application/json", //문자열이 아니라 json타입 임을 알려줌
-                    data: JSON.stringify(data), //json값으로 변경
-                    success: function (response) {
-                      if (response == true){
-                        alert('확인되었습니다.');
-                        editPost(id);
-                      } else {
-                        alert('비밀번호가 틀렸습니다.');
-                        window.location.reload();
-                      }
-                    }
-                  })
-        }
-
-        // 비밀번호가 일치하는지 확인(삭제)
-        function checkPassword2(id) {
-          let password2 = $(`#${id}-password2-d`).val().trim(); // trim() 공백 제거
-          let data = {"password": password2};
-
-          $.ajax({
-            type: "POST",
-            url: `/api/posts/${id}`,
-            contentType: "application/json", //문자열이 아니라 json타입 임을 알려줌
-            data: JSON.stringify(data), //json값으로 변경
-            async: false,
-            success: function (response) {
-              if (response == true) {
-                deleteOne(id);
-              } else {
-                alert('비밀번호가 틀렸습니다.');
-                window.location.reload();
-              }
-            }
-          })
-        }
-
-        // 수정 버튼을 눌렀을 때, 기존의 작성 내용을 수정 창에 나타냄
-        function editPost(id) {
-          showEdits(id);
-          let title = $(`#${id}-title`).text().trim();
-          $(`#${id}-titlearea`).val(title);
-
-          let autor = $(`#${id}-autor`).text().trim();
-          $(`#${id}-autorarea`).val(autor);
-
-          let contents = $(`#${id}-contents`).text().trim();
-          $(`#${id}-textarea`).val(contents);
-
-          let password;
-
-          $.ajax({
-            type: 'GET',
-            url: `/api/posts/${id}`,
-            async: false,
-            success: function (data) {
-              console.log(data);
-              password = data.password;
-              }
-          })
-          $(`#${id}-passwordarea`).val(password);
-        }
-
-
-        // 원래 태그는 숨기고 필요한 태그만 나타냄
-        function showEdits(id) {
-          $(`#${id}-edittitle`).show();
-          $(`#${id}-editautor`).show();
-          $(`#${id}-editarea`).show();
-          $(`#${id}-editpassword`).show();
-          $(`#${id}-submit`).show();
-
-          $(`#${id}-password2`).hide();
-          $(`#${id}-pw2-button`).hide();
-          $(`#${id}-title`).hide();
-          $(`#${id}-autor`).hide();
-          $(`#${id}-contents`).hide();
-          $(`#${id}-edit`).hide();
-          $(`#${id}-delete`).hide();
-        }
 
 
         $(document).ready(function () {
@@ -405,67 +317,44 @@
                 let id = post.id;
                 let title = post.title;
                 let autor = post.autor;
-                let contents = post.content;
-                let modifiedAt = post.modifiedAt;
-                addHTML(id, title, autor, contents, modifiedAt);
+                let createdAt = post.createdAt;
+                addHTML(id, title, autor, createdAt);
               }
             }
           })
         }
 
         // 생성한 게시글의 html
-        function addHTML(id, title, autor, content, modifiedAt) {
+        function addHTML(id, title, autor, createdAt) {
           let tempHtml = `<div class="card">
-                            <div class="metadata">
-                                <div class="date">
-                                    ${modifiedAt}
-                                </div>
-                                <div class="title">
-                                    <div id="${id}-title" class="text">
-                                        ${title}
-                                    </div>
-                                    <div id="${id}-edittitle" class="edit">
-                                        <textarea id="${id}-titlearea" class="te-edit" name="" id=""></textarea>
-                                    </div>
-                                </div>
-                                <div class="autor">
-                                    <div id="${id}-autor" class="text">
-                                        ${autor}
-                                    </div>
-                                    <div id="${id}-editautor" class="edit">
-                                        <textarea id="${id}-autorarea" class="te-edit" name="" id=""></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contents">
-                                <div id="${id}-contents" class="text">
-                                    ${content}
-                                </div>
-                                <div id="${id}-editarea" class="edit">
-                                    <textarea id="${id}-textarea" class="te-edit" name="" id="" cols="30" rows="5"></textarea>
-                                </div>
-                            </div>
-                            <div class="password">
-                                <div id="${id}-editpassword" class="edit">
-                                  <textarea id="${id}-passwordarea" class="te-edit" name="" id=""></textarea>
-                                </div>
-                            </div>
-                            <form class="pw-check">
-                                <input type="password" class="field" id="${id}-password2" placeholder="비밀번호 확인">
-                                <button type="button" class="field" id="${id}-pw2-button" onclick="checkPassword('${id}')">확인</button>
-                            </form>
-                            <form class="pw-check">
-                                <input type="password" class="field" id="${id}-password2-d" placeholder="비밀번호 확인">
-                                <button type="button" class="field" id="${id}-pw2-button-d" onclick="checkPassword2('${id}')">확인</button>
-                            </form>
-                            <div class="footer">
-                                <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="showCheck('${id}')">
-                                <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="showCheck2('${id}')">
-                                <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
-                            </div>
+                            <a href="/api/detail/${id}">
+<!--                              <a href="" onclick="ListOne(${id})">-->
+                              <div class="metadata">
+                                  <div class="date">
+                                      ${createdAt}
+                                  </div>
+                                  <div class="title">
+                                      <div id="${id}-title" class="text">
+                                          제목: ${title}
+                                      </div>
+                                      <div id="${id}-edittitle" class="edit">
+                                          <textarea id="${id}-titlearea" class="te-edit" name="" id=""></textarea>
+                                      </div>
+                                  </div>
+                                  <div class="autor">
+                                      <div id="${id}-autor" class="text">
+                                          작성자: ${autor}
+                                      </div>
+                                      <div id="${id}-editautor" class="edit">
+                                          <textarea id="${id}-autorarea" class="te-edit" name="" id=""></textarea>
+                                      </div>
+                                  </div>
+                              </div>
+                            <a>
                         </div>`;
           $('#cards-box').append(tempHtml);
         }
+
 
         //  게시글 생성
         function writePost() {
@@ -475,7 +364,7 @@
           let contents = $('#contents').val();
           let password = $('#password').val();
 
-          if (isValidContents(contents) == false) {
+          if (isValidContents(title, autor, password, contents) == false) {
             return;
             }
 
@@ -494,42 +383,6 @@
           });
         }
 
-        // 게시글 수정
-        function submitEdit(id) {
-          let title = $(`#${id}-titlearea`).val().trim();//trim 으로 앞뒤 공백 제거
-          let autor = $(`#${id}-autorarea`).val().trim();
-          let contents = $(`#${id}-textarea`).val().trim();
-          let password = $(`#${id}-passwordarea`).val().trim();
-
-          if (isValidContents(contents) == false) {
-            return;
-          }
-
-          let data = {'title': title, 'autor':autor, 'content': contents, 'password':password};
-
-          $.ajax({
-            type: "PUT",
-            url: `/api/posts/${id}`,
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (response) {
-              alert('수정 완료');
-              window.location.reload();
-            }
-          });
-        }
-
-        // 게시글 삭제
-        function deleteOne(id) {
-          $.ajax({
-            type: "DELETE",
-            url: `/api/posts/${id}`,
-            success: function (response) {
-              alert('삭제 완료');
-              window.location.reload();
-            }
-          })
-        }
     </script>
 </head>
 
@@ -560,6 +413,7 @@
 
   <div id="cards-box" class="area-read">
   </div>
+
 </div>
 </body>
 

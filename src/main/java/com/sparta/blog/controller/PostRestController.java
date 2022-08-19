@@ -3,6 +3,7 @@ package com.sparta.blog.controller;
 
 import com.sparta.blog.domain.Post;
 import com.sparta.blog.domain.PostRepository;
+import com.sparta.blog.models.IdPostResponseDto;
 import com.sparta.blog.models.PasswordDto;
 import com.sparta.blog.models.PostRequestDto;
 import com.sparta.blog.models.PostResponseDto;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +30,29 @@ public class PostRestController {
         return postRepository.findAll();
     }
 
+
     // id값으로 조회해서 id에 해당하는 데이터만 반환(password)
     @GetMapping("/api/posts/{id}")
     public PostResponseDto findById(@PathVariable Long id) {
         return postService.findById(id);
     }
+
+
+    // 상세 페이지 조회
+    // 타임리프, 템플릿 이동
+    @RequestMapping(value = "/api/detail/{id}", method = RequestMethod.GET)
+    public ModelAndView getIdPost(@PathVariable Long id) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("data" , postService.getIdPost(id));
+        model.setViewName("listone");
+        return model;
+    }
+
+    // 상세 페이지 조회
+//    @GetMapping("/api/detail/{id}")
+//    public IdPostResponseDto getIdPost(@PathVariable Long id) {
+//        return postService.getIdPost(id);
+//    }
 
     // 게시글 등록
     @ResponseBody

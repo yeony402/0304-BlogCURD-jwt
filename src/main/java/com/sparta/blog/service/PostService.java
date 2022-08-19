@@ -3,6 +3,7 @@ package com.sparta.blog.service;
 
 import com.sparta.blog.domain.Post;
 import com.sparta.blog.domain.PostRepository;
+import com.sparta.blog.models.IdPostResponseDto;
 import com.sparta.blog.models.PasswordDto;
 import com.sparta.blog.models.PostRequestDto;
 import com.sparta.blog.models.PostResponseDto;
@@ -43,6 +44,12 @@ public class PostService {
     public PostResponseDto findById(Long id) {
         Optional<Post> post = postRepository.findById(id);
         return new PostResponseDto(post);
+    }
+
+    @Transactional
+    public IdPostResponseDto getIdPost(Long id) {
+        Optional<Post> post = postRepository.findById(id);
+        return new IdPostResponseDto(post);
     }
 
 }
