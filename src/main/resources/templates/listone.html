@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:c="">
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -275,6 +276,17 @@
         }
     </style>
     <script>
+
+        $(document).ready(function () {
+            if ($.cookie('token')) {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': $.cookie('token')
+                    }
+                })
+            }
+        })
+
         // 내용을 올바르게 입력했는지 확인
         function isValidContents(title, autor, password, contents) {
             if (contents == '') {
@@ -298,8 +310,6 @@
         }
 
 
-
-
         function showCheck(id){
             $(`#${id}-password2`).show();
             $(`#${id}-pw2-button`).show();
@@ -320,6 +330,7 @@
                 url: `/api/posts/${id}`,
                 contentType: "application/json", //문자열이 아니라 json타입 임을 알려줌
                 data: JSON.stringify(data), //json값으로 변경
+                async: false,
                 success: function (response) {
                     if (response == true){
                         alert('확인되었습니다.');
@@ -354,7 +365,7 @@
             })
         }
 
-        // 수정 버튼을 눌렀을 때, 기존의 작성 내용을 수정 창에 나타냄
+        // 비밀번호 일치 확인 후, 기존의 작성 내용을 수정 창에 나타냄
         function editPost(id) {
             showEdits(id);
             let title = $(`#${id}-title`).text().trim();
@@ -415,7 +426,7 @@
 
             $.ajax({
                 type: "PUT",
-                url: `/api/posts/${id}`,
+                url: `/api/auth/posts/${id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
@@ -430,7 +441,7 @@
         function deleteOne(id) {
             $.ajax({
                 type: "DELETE",
-                url: `/api/posts/${id}`,
+                url: `/api/auth/posts/${id}`,
                 success: function (response) {
                     alert('삭제 완료');
                     location.href = "/";

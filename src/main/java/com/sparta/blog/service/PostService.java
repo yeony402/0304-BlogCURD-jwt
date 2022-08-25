@@ -1,12 +1,12 @@
 package com.sparta.blog.service;
 
 
-import com.sparta.blog.domain.Post;
-import com.sparta.blog.domain.PostRepository;
-import com.sparta.blog.models.IdPostResponseDto;
-import com.sparta.blog.models.PasswordDto;
-import com.sparta.blog.models.PostRequestDto;
-import com.sparta.blog.models.PostResponseDto;
+import com.sparta.blog.model.Post;
+import com.sparta.blog.repository.PostRepository;
+import com.sparta.blog.dto.IdPostResponseDto;
+import com.sparta.blog.dto.PasswordDto;
+import com.sparta.blog.dto.PostRequestDto;
+import com.sparta.blog.dto.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,15 @@ import java.util.Optional;
 @Service // 서비스임을 선언
 public class PostService {
     private final PostRepository postRepository;
+
+    public Post createPost(PostRequestDto requestDto) {
+        // 요청받은 DTO 로 DB에 저장할 객체 만들기
+        Post post = new Post(requestDto);
+
+        postRepository.save(post);
+
+        return post;
+    }
 
     @Transactional // 메소드 동작이 SQL 쿼리문임을 선언
     public Long update(Long id, PostRequestDto requestDto) {
@@ -46,10 +55,20 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+    // 클릭된 id가 쓴 게시글 return
     @Transactional
     public IdPostResponseDto getIdPost(Long id) {
         Optional<Post> post = postRepository.findById(id);
         return new IdPostResponseDto(post);
+    }
+
+    @Transactional
+    public Boolean sameId(Long id, Long userId) {
+        if (id == userId){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

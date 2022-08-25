@@ -1,6 +1,5 @@
 package com.sparta.blog.entity;
 
-import com.sparta.blog.models.PostRequestDto;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

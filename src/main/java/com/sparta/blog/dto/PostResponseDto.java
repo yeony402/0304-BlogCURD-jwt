@@ -1,7 +1,7 @@
-package com.sparta.blog.models;
+package com.sparta.blog.dto;
 
 
-import com.sparta.blog.domain.Post;
+import com.sparta.blog.model.Post;
 import lombok.Getter;
 
 import java.util.Optional;

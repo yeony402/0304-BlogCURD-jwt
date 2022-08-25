@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:c="">
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
+  <script src="basic.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Timeline Service</title>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+
 
   <style>
         @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css);
@@ -136,7 +140,7 @@
             position: relative;
             display: flex;
             font-family: 'Spoqa Han Sans';
-            font-size: 13px;
+            font-size: 15px;
             font-weight: normal;
             font-stretch: normal;
             font-style: normal;
@@ -160,11 +164,6 @@
           margin-left: 10px;
         }
 
-        .contents {
-            padding: 0px 23px;
-            word-wrap: break-word;
-            word-break: break-all;
-        }
 
         .contents div.edit {
             display: none;
@@ -184,11 +183,6 @@
 
         .pw-check .field{
           display: none;
-        }
-
-        .pw-check {
-          margin-left: 10px;
-          margin-top: 5px;
         }
 
         .contents textarea.te-edit {
@@ -236,45 +230,12 @@
         }
 
 
-        .footer {
-            position: relative;
-            height: 40px;
-        }
-
-
-        .footer img.icon-start-edit {
-            cursor: pointer;
-            position: absolute;
-            bottom: 14px;
-            right: 55px;
-            width: 18px;
-            height: 18px;
-        }
-
-        .footer img.icon-end-edit {
-            cursor: pointer;
-            position: absolute;
-            display: none;
-            bottom: 14px;
-            right: 55px;
-            width: 20px;
-            height: 15px;
-        }
-
-        .footer img.icon-delete {
-            cursor: pointer;
-            position: absolute;
-            bottom: 12px;
-            right: 19px;
-            width: 14px;
-            height: 18px;
-        }
-
         #cards-box {
             margin-top: 12px;
         }
     </style>
   <script>
+
     // 내용을 올바르게 입력했는지 확인
         function isValidContents(title, autor, password, contents) {
           if (contents == '') {
@@ -298,9 +259,17 @@
         }
 
 
-
         $(document).ready(function () {
+          if ($.cookie('token')) {
+            $.ajaxSetup({
+              headers: {
+                'Authorization': $.cookie('token')
+              }
+            })
             getMessages();
+          } else {
+            getMessages();
+          }
         })
 
 
@@ -311,7 +280,7 @@
             type: 'GET',
             url: '/api/posts',
             success: function (response) {
-              // console.log(response);
+              console.log(response);
               for(let i=0; i<response.length; i++){
                 let post = response[i]
                 let id = post.id;
@@ -324,11 +293,12 @@
           })
         }
 
+
         // 생성한 게시글의 html
         function addHTML(id, title, autor, createdAt) {
           let tempHtml = `<div class="card">
-                            <a href="/api/detail/${id}">
-<!--                              <a href="" onclick="ListOne(${id})">-->
+                             <a href="/api/details/${id}">
+<!--                            <a href="" onclick="usermatch(${id})">-->
                               <div class="metadata">
                                   <div class="date">
                                       ${createdAt}
@@ -358,29 +328,41 @@
 
         //  게시글 생성
         function writePost() {
-          // 입력한 값 받아오기
-          let title = $('#title').val();
-          let autor = $('#autor').val();
-          let contents = $('#contents').val();
-          let password = $('#password').val();
+          if ($.cookie('token')) {
+            $.ajaxSetup({
+              headers: {
+                'Authorization': $.cookie('token')
+              }
+            })
+            // 입력한 값 받아오기
+            let title = $('#title').val();
+            let autor = $('#autor').val();
+            let contents = $('#contents').val();
+            let password = $('#password').val();
 
-          if (isValidContents(title, autor, password, contents) == false) {
-            return;
+            if (isValidContents(title, autor, password, contents) == false) {
+              return;
             }
 
-          let data = {'title': title, 'autor':autor, 'content': contents, 'password':password};
+            let data = {'title': title, 'autor':autor, 'content': contents, 'password':password};
 
-          $.ajax({
-            type: "POST",
-            url: "/api/posts",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            // async: false,
-            success: function (data) {
-              alert('게시글이 등록되었습니다.');
-              window.location.reload();
-            }
-          });
+            $.ajax({
+              type: "POST",
+              url: "/api/auth/posts",
+              contentType: "application/json",
+              data: JSON.stringify(data),
+              async: false,
+              success: function (data) {
+                console.log(data);
+                alert('게시글이 등록되었습니다.');
+                window.location.reload();
+              }
+
+            });
+          } else {
+            alert("로그인 후 이용 가능합니다.")
+            location.reload();
+          }
         }
 
     </script>
@@ -389,9 +371,15 @@
 <body>
 <div class="background-header">
 
+  <div id="header-wrapper">
+
+    <form id="login_form" method="get" action="/login">
+      <a id="login-text" href="javascript:{}" onclick="document.getElementById('login_form').submit();">로그인</a>
+    </form>
+
+  </div>
 </div>
 <div class="background-body">
-
 </div>
 <div class="wrap">
   <div class="header">
@@ -408,12 +396,11 @@
     <input type="password" class="field" id="password" placeholder="비밀번호">
     <textarea class="field" placeholder="오늘의 개발 팁은 무엇인가요? " name="contents" id="contents" cols="30" rows="10"></textarea>
     <!--            <button class="btn btn-danger" onclick="writePost()">작성하기</button>-->
-    <img src="images/send.png" alt="" onclick="writePost()">
+    <img th:src="@{/images/send.png}" alt="" onclick="writePost()">
   </div>
 
   <div id="cards-box" class="area-read">
   </div>
-
 </div>
 </body>
 

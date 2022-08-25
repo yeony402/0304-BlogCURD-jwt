@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.2'
+	id 'org.springframework.boot' version '2.5.2'
 	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
 	id 'java'
 }
@@ -21,7 +21,10 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+    compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -30,10 +33,18 @@ dependencies {
 
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+//	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
 
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20160810'
+//	implementation group: 'org.json', name: 'json', version: '20160810'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'commons-codec:commons-codec:1.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	compileOnly 'com.auth0:java-jwt:3.13.0'
+
 }
 
 tasks.named('test') {

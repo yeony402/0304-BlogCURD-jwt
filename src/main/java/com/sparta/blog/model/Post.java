@@ -1,11 +1,10 @@
-package com.sparta.blog.domain;
+package com.sparta.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.blog.entity.Timestamped;
-import com.sparta.blog.models.PostRequestDto;
+import com.sparta.blog.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 
