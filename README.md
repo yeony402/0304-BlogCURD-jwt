@@ -1,7 +1,7 @@
 # java03-BlogCURD-jwt
 
 
-03주차 spring의 create, read, update, delete 기능이 있는 블로그 구현
+03주차 spring의 create, read, update, delete 기능이 있는 블로그 구현 
 
 게시글 등록 
 - 제목, 작성자, 비밀번호, 내용 입력
