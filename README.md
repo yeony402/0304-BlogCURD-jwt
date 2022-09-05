@@ -45,5 +45,6 @@
 로그인 후 token이 메인페이지까지만 적용돼서 상세페이지의 수정, 삭제 기능에 토큰 전달이 안되는 듯 하다.
 
 --> controller에서 request로 헤더에 토큰 값을 받으면 된다.
+
 ------
 ![image](https://user-images.githubusercontent.com/44489399/188465629-89eb011e-2738-4a01-affb-5011051c525d.png)
