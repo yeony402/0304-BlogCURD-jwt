@@ -2,6 +2,7 @@
 
 
 03주차 spring의 create, read, update, delete 기능이 있는 블로그 구현 
+![image](https://user-images.githubusercontent.com/44489399/188465629-89eb011e-2738-4a01-affb-5011051c525d.png)
 
 게시글 등록 
 - 제목, 작성자, 비밀번호, 내용 입력
