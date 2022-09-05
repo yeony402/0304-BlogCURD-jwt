@@ -2,7 +2,6 @@
 
 
 03주차 spring의 create, read, update, delete 기능이 있는 블로그 구현 
-![image](https://user-images.githubusercontent.com/44489399/188465629-89eb011e-2738-4a01-affb-5011051c525d.png)
 
 게시글 등록 
 - 제목, 작성자, 비밀번호, 내용 입력
@@ -27,3 +26,6 @@
 * oath2로 카카오 로그인 기능 구현
 * 로그인 시 jwt 토큰 발행
 * 쿠키에 토큰 유무로 게시글 작성 권한 부여
+
+------
+![image](https://user-images.githubusercontent.com/44489399/188465629-89eb011e-2738-4a01-affb-5011051c525d.png)
